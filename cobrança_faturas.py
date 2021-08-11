@@ -173,7 +173,7 @@ class NovaFatura:
             subtotal = int(total_days) * valor_diaria
             desconto = 0
             total = total_hotel - (total_hotel * desconto / 100)
-            vencimento = f'''\nVENCIMENTO = 1 Hora antes do Check-in\n'''
+            vencimento = f'''\nVENCIMENTO: *1 Hora antes do Check-in*\n'''
             final = f'''
                         {greeting}
                         {termos}
@@ -194,7 +194,7 @@ class NovaFatura:
             dias_no_hotel, total_dias_no_hotel = self.dias_no_hotel()
             creche = dicio_cao['Valor Creche']
             valor_creche = int(creche.split("$")[1]) / 100
-            vencimento = f'''\nVENCIMENTO = 10/{datetime.date.today().month}/{datetime.date.today().year}\n'''
+            vencimento = f'''\nVENCIMENTO: 10/{datetime.date.today().month}/{datetime.date.today().year}\n'''
             valor_diaria = 40
             total_hotel = total_dias_no_hotel * valor_diaria
             subtotal = total_remedios + total_banho + total_hotel + valor_creche
