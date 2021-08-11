@@ -1,0 +1,6 @@
+venv/
+venv
+files/apikeys
+files/apikeys/faturasgspread.json
+files/faturas
+files/tables
