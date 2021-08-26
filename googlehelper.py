@@ -33,17 +33,20 @@ class SpreadQuery:
         for each_id in new_object.downloaded_list():
             openspread = self.service.open_by_key(each_id)
             worksheets = openspread.worksheets()
-            for tab in worksheets:
-                download = str(input(f'Planilha {openspread.title}\nQuer baixar a tab {tab.title}?\n'
-                                     f'["y"/"n"]\n'))
-                if download.strip().lower() == 'y':
+            only_this_month = str(input('Atualizar só esse mes?\n'))
+            if only_this_month.strip().lower() == 'y':
+                for tab in worksheets:
                     if mes in tab.title:
-                        records = openspread.worksheet(tab.title).get_all_records()
-                        with open(f"files/tables/{tab.title}.json", "w") as file:
-                            file.write('')
-                            json.dump(records, file, ensure_ascii=False, indent=4)
-                        print(f'Updated {tab.title}')
-                ManageDate().update_last_sync()
+                        download = str(input(f'Planilha {openspread.title}\nQuer baixar a tab {tab.title}?\n'
+                                             f'["y"/"n"]\n'))
+                        if download.strip().lower() == 'y':
+                            if mes in tab.title:
+                                records = openspread.worksheet(tab.title).get_all_records()
+                                with open(f"files/tables/{tab.title}.json", "w") as file:
+                                    file.write('')
+                                    json.dump(records, file, ensure_ascii=False, indent=4)
+                                print(f'Updated {tab.title}')
+                        ManageDate().update_last_sync()
             else:
                 continue
 
@@ -61,7 +64,7 @@ class SpreadQuery:
         new_object = ManageDate()
         openspread = self.service.open_by_key('1gzcSxg4fO5aG7pxhTxROaQZcQWuqVlKfrBdB0Te87jM')
         records = openspread.worksheet(f'Banhos {mes}').get_all_records()
-        with open(f"files/tables/Banhos_{mes}.json", "w") as file:
+        with open(f"files/tables/Banhos {mes}.json", "w") as file:
             file.write('')
             json.dump(records, file, ensure_ascii=False, indent=4)
         print(f'Updated Banhos')

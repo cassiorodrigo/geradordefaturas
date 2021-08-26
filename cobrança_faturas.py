@@ -7,7 +7,7 @@ mes = pt_months[datetime.date.today().month]
 
 class NovaFatura:
     def __init__(self, nome_cao='Todos', mespassed=mes, hotel=True):
-        self.nome_cao = nome_cao
+        self.nome_cao = nome_cao.strip().title()
         self.mes = mespassed
         self.hotel = hotel
 
@@ -19,7 +19,7 @@ class NovaFatura:
             with open(f"files/tables/Faturas Hotel {self.mes}.json", "r") as table_hotel:
                 dados_mes = json.load(table_hotel)
         for row_caes in dados_mes:
-            if self.nome_cao == row_caes['Cliente']:
+            if self.nome_cao == row_caes['Cliente'].strip().title():
                 return row_caes
 
     def get_banhos(self, name_dog_showered):
@@ -28,7 +28,7 @@ class NovaFatura:
             banhos_do_mes = json.load(banhos_mes)
 
             for row_showers in banhos_do_mes:
-                if row_showers['Cliente'] == name_dog_showered and row_showers['Banhos'] != '':
+                if row_showers['Cliente'].strip().title() == name_dog_showered.strip().title() and row_showers['Banhos'] != '':
                     lista_dia_de_banhos.append(row_showers['Dia do Banho'])
                     how_many_banhos = row_showers['Banhos']
                     how_much_per_banho = row_showers['Cada']
@@ -50,7 +50,7 @@ class NovaFatura:
         with open(f"files/tables/Remedios {self.mes}.json", "r") as remedios_mes:
             remedios_do_mes = json.load(remedios_mes)
             for row_medicine in remedios_do_mes:
-                if row_medicine['Cliente'] == name_dog_medicine and row_medicine['Quantidade'] != '':
+                if row_medicine['Cliente'].strip().title() == name_dog_medicine and row_medicine['Quantidade'] != '':
                     how_many_pills = row_medicine['Quantidade']
                     how_much_per_pill = row_medicine['Valor da Unidade']/100
                     total_pills = row_medicine['Total']/100
@@ -70,22 +70,22 @@ class NovaFatura:
             with open("files/tables/Presencas.json", "r") as docpresencas:
                 presencas = json.load(docpresencas)
                 for presenca in presencas:
-                    if presenca['Cliente'] == self.nome_cao and presenca['Hotel/Creche'] != 'Creche':
+                    if presenca['Cliente'].strip().title() == self.nome_cao and presenca['Hotel/Creche'] != 'Creche':
                         lista_dias_no_hotel.append(presenca['Data'])
                 return lista_dias_no_hotel, len(lista_dias_no_hotel)
         else:
             with open(f"files/tables/Faturas Hotel {mes}.json", "r") as dicio_hotel:
                 data_hotel = json.load(dicio_hotel)
                 for dog_guest in data_hotel:
-                    if dog_guest['Cliente'] == self.nome_cao:
+                    if dog_guest['Cliente'].strip().title() == self.nome_cao:
                         return dog_guest['Data Entrada'], dog_guest['Data Saída'], dog_guest['Total de Dias']
 
     def greeting(self):
         nome_cao = self.get_base()
 #        if not self.hotel:
-        if nome_cao['Cliente'] == self.nome_cao:
-            owner = nome_cao['Pais']
-            dog = nome_cao['Cliente']
+        if nome_cao['Cliente'].strip().title() == self.nome_cao.strip().title():
+            owner = nome_cao['Pais'].strip().title()
+            dog = nome_cao['Cliente'].strip().title()
             if owner != "" and owner != 'Nome Não Encontrado':
                 nome_dono = f'''Olá {owner}!'''
             else:
@@ -167,8 +167,8 @@ class NovaFatura:
                         Check-in: {date_in}
                         Check-out: {date_out}
                         Total de dias: {total_days}
-                        Valor por diária: R${valor_diaria:.2f}
-                        Total Hotel: R${total_hotel:.2f}
+                        Valor por diária: R${float(valor_diaria):.2f}
+                        Total Hotel: R$
             '''
             subtotal = int(total_days) * valor_diaria
             desconto = 0
@@ -229,5 +229,5 @@ class NovaFatura:
 
 
 if __name__ == "__main__":
-    nova_fatura = NovaFatura(nome_cao="Dumbledore", hotel=False)
+    nova_fatura = NovaFatura(nome_cao="Rayka", hotel=True)
     print(nova_fatura.monta_fatura())
